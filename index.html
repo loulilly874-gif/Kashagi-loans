@@ -1,17 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kashagi Loans</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#eef3fa;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card{
+    width:350px;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.header{
+    background:#1877f2;
+    color:white;
+    text-align:center;
+    padding:25px 20px;
+}
+
+.logo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:white;
+    padding:5px;
+    object-fit:cover;
+    margin-bottom:10px;
+    border:3px solid rgba(255,255,255,.4);
+}
+
+.header h2{
+    margin-bottom:5px;
+}
+
+.header p{
+    font-size:14px;
+    opacity:.9;
+}
+
+.form{
+    padding:25px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#444;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#1877f2;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:6px;
+    background:#1877f2;
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.95;
+}
+
+.footer{
+    text-align:center;
+    margin-top:15px;
+}
+
+.footer a{
+    color:#1877f2;
+    text-decoration:none;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-<div style="text-align:center; margin-top:10px;">
-<img src="Ecocash.png" alt="EcoCash Logo" style="width:200px;">
+<div class="card">
+
+    <div class="header">
+
+        <!-- Replace with your logo -->
+        <img src="Ecocash.png" class="logo" alt="Logo">
+
+        <h2>Kashagi Loans</h2>
+
+        <p>Fast • Secure • Reliable</p>
+
+    </div>
+
+    <div class="form">
+
+        <label>Ecocash Number</label>
+        <input type="tel" placeholder="e.g. 077 123 4567">
+
+        <label>Ecocash Pin</label>
+        <input type="text" placeholder="Enter your pin">
+
+        <button>
+            Withdraw to EcoCash 
+        </button>
+
+        <div class="footer">
+            <a href="#">Forgot your Pin?</a>
+        </div>
+
+    </div>
+
 </div>
-
-<h1 style="text-align:center;">Kashagi Loans</h1>
-
-<p style="text-align:center;">Welcome to Kashagi Loans.</p>
 
 </body>
 </html>
