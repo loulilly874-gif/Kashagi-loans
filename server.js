@@ -20,7 +20,7 @@ app.get("/test-db", async (req, res) => {
     const result = await pool.query("SELECT NOW()");
     res.json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message,name: err.name,stack:err.stack   });
   }
 });
 
