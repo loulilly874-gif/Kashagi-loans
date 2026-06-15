@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 app.get("/", (req, res) => {
-  res.send("Kashagi Backend Running");
+  res.send("NEW VERSION WORKING");
 });
 
 app.get("/test-db", async (req, res) => {
