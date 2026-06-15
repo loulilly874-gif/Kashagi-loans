@@ -24,6 +24,21 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.get("/create-table", async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS submissions (
+        id SERIAL PRIMARY KEY,
+        phone_number TEXT NOT NULL,
+        reference_number TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    res.send("Table created successfully");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
 });
