@@ -113,7 +113,7 @@ res.send(`
 
 <!DOCTYPE html><html>
 <head>
-<title>Kashagi Dashboard</title><style>
+<title>Kashagi Loan Dashboard</title><style>
 
 body{
   font-family:Arial,sans-serif;
@@ -191,7 +191,7 @@ tr:hover{
   background:#f1f7ff;
 }
 
-</style></head><body><div class="container"><h1>Kashagi Dashboard</h1><div class="cards"><div class="card">
+</style></head><body><div class="container"><h1>Kashagi Loan Dashboard</h1><div class="cards"><div class="card">
 <h3>Total Submissions</h3>
 <h2>${totalResult.rows[0].count}</h2>
 </div><div class="card">
