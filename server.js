@@ -113,7 +113,7 @@ res.send(`
 
 <!DOCTYPE html><html>
 <head>
-<title>Kashagi Loan Dashboard By Collins/Titus</title><style>
+<title>Kashagi Loan Titus Dashboard</title><style>
 
 body{
   font-family:Arial,sans-serif;
