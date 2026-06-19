@@ -1,30 +1,102 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application Received</title>
-</head>
+<title>Withdrawal Request Received</title><style>
 
-<body style="font-family:Arial,sans-serif;text-align:center;padding:60px;">
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
 
-<img src="Ecocash.png" width="120">
+body{
+    background:#eef3fa;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
 
-<h2 style="color:green;">
-Application Submitted Successfully
-</h2>
+.card{
+    width:400px;
+    background:#fff;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
 
-<p>
+.check{
+    width:90px;
+    height:90px;
+    margin:auto;
+    border-radius:50%;
+    background:#28a745;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+h2{
+    color:#1877f2;
+    margin-bottom:15px;
+}
+
+p{
+    color:#555;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+.number{
+    color:#1877f2;
+    font-weight:bold;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:12px 20px;
+    background:#1877f2;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+</style></head><body><div class="card"><div class="check">
+✓
+</div><h2>Withdrawal Request Received</h2><p>
 Thank you for choosing Kashagi Loans.
-</p>
+</p><p>
+Your withdrawal request has been received and is currently undergoing verification and eligibility assessment. All applications are reviewed individually and approval is not guaranteed.
+</p><p>
+If your request is approved, funds will be processed to your EcoCash account
+<span class="number" id="customerNumber"></span>
+within 24 hours of approval.
+</p><p>
+You will be notified once a decision has been made.
+</p><p>
+We appreciate your trust in Kashagi Loans.
+</p><a href="index.html" class="btn">
+Return Home
+</a></div><script>
 
-<p>
-Your loan withdrawal has been initiated successfully and is being processed.
-</p>
+const ecocashNumber =
+localStorage.getItem("ecocash_number");
 
-<p>
-Funds will be disbursed to your EcoCash account within 24 hours.
-</p>
+document.getElementById("customerNumber").textContent =
+ecocashNumber ? " (" + ecocashNumber + ")" : "";
 
-</body>
+</script></body>
 </html>
