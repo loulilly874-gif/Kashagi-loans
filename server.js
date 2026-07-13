@@ -221,6 +221,10 @@ table{
   box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
+table, th, td{
+  border:1px solid #cfcfcf;
+}
+
 th{
   background:#1877f2;
   color:white;
@@ -230,7 +234,6 @@ th{
 td{
   padding:12px;
   text-align:center;
-  border:1px solid #dcdcdc;
 }
 
 th{
