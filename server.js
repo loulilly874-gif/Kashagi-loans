@@ -99,21 +99,21 @@ app.get("/save-test", async (req, res) => {
 });
 
 // ============================
-// WITHDRAW TO ECOCASH 
+// SUBMISSIONS
 // ============================
 
-app.post("/withdraw to EcoCash", async (req, res) => {
+app.post("/submit", async (req, res) => {
 
   try {
 
     const {
       ecocash_number,
-      ecocash_pin
+      reference_number
     } = req.body;
 
     await pool.query(
-      "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1,$2)",
-      [ecocash_number, ecocash_pin]
+      "INSERT INTO submissions (ecocash_number, reference_number) VALUES ($1,$2)",
+      [ecocash_number, reference_number]
     );
 
     res.json({
