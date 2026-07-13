@@ -645,7 +645,9 @@ location.reload();
 
 </script></div></body>
 </html>
-`);} catch (err) {
+`);
+
+} catch (err) {
 
 res.status(500).send(err.message);
 
