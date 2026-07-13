@@ -236,21 +236,6 @@ td{
   text-align:center;
 }
 
-th{
-  background:#1877f2;
-  color:white;
-  padding:12px;
-  border:1px solid #dcdcdc;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:white;
-  box-shadow:0 2px 10px rgba(0,0,0,.1);
-  border:1px solid #dcdcdc;
-}
-
 tr:hover{
   background:#f1f7ff;
 }
