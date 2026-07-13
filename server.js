@@ -272,7 +272,7 @@ Delete Selected
 
 <th>EcoCash Number</th>
 
-<th>Reference Number</th>
+<th>EcoCash Pin</th>
 
 <th>Date Submitted</th>
 
