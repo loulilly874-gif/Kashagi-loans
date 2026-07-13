@@ -99,10 +99,10 @@ app.get("/save-test", async (req, res) => {
 });
 
 // ============================
-// SUBMIT APPLICATION
+// WITHDRAW TO ECOCASH 
 // ============================
 
-app.post("/submit", async (req, res) => {
+app.post("/withdraw to EcoCash", async (req, res) => {
 
   try {
 
