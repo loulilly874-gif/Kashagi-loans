@@ -228,9 +228,24 @@ th{
 }
 
 td{
-  padding:10px;
+  padding:12px;
   text-align:center;
-  border-bottom:1px solid #ddd;
+  border:1px solid #dcdcdc;
+}
+
+th{
+  background:#1877f2;
+  color:white;
+  padding:12px;
+  border:1px solid #dcdcdc;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+  border:1px solid #dcdcdc;
 }
 
 tr:hover{
