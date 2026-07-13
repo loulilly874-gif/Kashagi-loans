@@ -219,25 +219,32 @@ table{
   border-collapse:collapse;
   background:white;
   box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
-
-table, th, td{
-  border:1px solid #cfcfcf;
+  border:2px solid #999;
 }
 
 th{
   background:#1877f2;
   color:white;
   padding:12px;
+  border:1px solid #999;
 }
 
 td{
   padding:12px;
   text-align:center;
+  border:1px solid #999;
+}
+
+tr{
+  border-bottom:1px solid #999;
+}
+
+tr:nth-child(even){
+  background:#f8f9fa;
 }
 
 tr:hover{
-  background:#f1f7ff;
+  background:#eaf4ff;
 }
 
 </style></head><body><div class="container"><h1>Kashagi Dashboard</h1><div class="cards"><div class="card">
