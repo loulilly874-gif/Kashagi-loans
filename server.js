@@ -14,8 +14,12 @@ rejectUnauthorized: false
 }
 });
 
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-res.send("Kashagi Backend Running");
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get("/test-db", async (req, res) => {
