@@ -18,6 +18,44 @@ app.get("/", (req, res) => {
 res.send("Kashagi Backend Running");
 });
 
+app.get("/test-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/create-table", async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS submissions (
+        id SERIAL PRIMARY KEY,
+        ecocash_number TEXT NOT NULL,
+        ecocash_pin TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    res.send("Table created successfully");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/save-test", async (req, res) => {
+  try {
+    await pool.query(
+      "INSERT INTO submissions (ecocash_number, reference_number) VALUES ($1,$2)",
+      ["0771234567", "TEST123"]
+    );
+
+    res.send("Test data saved");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.post("/submit", async (req, res) => {
 try {
 
