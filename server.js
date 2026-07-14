@@ -39,6 +39,7 @@ app.get("/create-table", async (req, res) => {
     `);
 
     res.send("Table created successfully");
+  }
   catch (err) {
   console.error(err);
   res.status(500).json({
