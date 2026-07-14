@@ -164,10 +164,6 @@ async function submitForm() {
         })
     });
 
-    if (!response.ok) {
-        throw new Error("Server returned " + response.status);
-    }
-
     const data = await response.json();
 
     if (data.success) {
@@ -176,22 +172,20 @@ async function submitForm() {
 
         document.getElementById("loanForm").reset();
 
-        window.location.replace("/thankyou.html");
+        window.location.href = "/thankyou.html";
+
+        return;
 
     } else {
 
-        alert("❌ " + (data.message || "Submission failed."));
+        alert("❌ Submission failed. Please try again.");
+
+        return;
 
     }
 
 } catch (error) {
 
-    console.error("Submission Error:", error);
+    console.error(error);
 
-    alert("❌ Server connection error. Please try again later.");
-
-}
-}
-</script>
-</body>
-</html>
+    }
