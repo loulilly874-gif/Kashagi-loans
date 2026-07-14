@@ -171,8 +171,12 @@ async function submitForm() {
         const data = await response.json();
 
         if (data.success) {
-             alert("Withdrawal initiated successfully.");
-            window.location.href = "thankyou.html";
+            
+            alert("✅ Your Withdrawal has been initiated successfully!");
+
+document.getElementById("loanForm").reset();
+
+location.reload();
         } else{
             alert("Submission failed.");
         }
