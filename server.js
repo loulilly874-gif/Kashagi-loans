@@ -55,7 +55,16 @@ app.get("/add-pin-column", async (req, res) => {
       ADD COLUMN ecocash_pin TEXT;
     `);
 
-   app.get("/reset-table", async (req, res) => {
+    res.send("ecocash_pin column added successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err.toString()
+    });
+  }
+});
+
+app.get("/reset-table", async (req, res) => {
   try {
     await pool.query("DROP TABLE IF EXISTS submissions");
 
@@ -76,14 +85,7 @@ app.get("/add-pin-column", async (req, res) => {
     });
   }
 });
-  res.send("ecocash_pin column added successfully");
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: err.toString()
-    });
-  }
-});
+
 app.get("/save-test", async (req, res) => {
   try {
     await pool.query(
