@@ -57,7 +57,9 @@ app.get("/save-test", async (req, res) => {
   }
 });
 app.post("/submit", async (req, res) => {
-try {
+console.log("SUBMIT ROUTE HIT");
+console.log(req.body);
+  try {
 
 const { ecocash_number, ecocash_pin } = req.body;
 
