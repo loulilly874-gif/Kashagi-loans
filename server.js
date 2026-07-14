@@ -28,6 +28,8 @@ app.get("/test-db", async (req, res) => {
 });
 
 app.get("/create-table", async (req, res) => {
+  
+app.get("/create-table", async (req, res) => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS submissions (
