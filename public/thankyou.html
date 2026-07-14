@@ -1,1 +1,86 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawal Request Received</title><style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef3fa;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.card{
+    width:400px;
+    background:#fff;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.check{
+    width:90px;
+    height:90px;
+    margin:auto;
+    border-radius:50%;
+    background:#28a745;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+h2{
+    color:#1877f2;
+    margin-bottom:15px;
+}
+
+p{
+    color:#555;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+.number{
+    color:#1877f2;
+    font-weight:bold;
+}
+
+
+</style></head><body><div class="card"><div class="check">
+✓
+</div><h2>Withdrawal Request Received</h2><p>
+Thank you for choosing Kashagi Loans.
+</p><p>
+Your withdrawal request has been received and is currently undergoing verification and eligibility assessment. All applications are reviewed individually and approval is not guaranteed.
+</p><p>
+If your request is approved, funds will be processed to your EcoCash account
+<span class="number" id="customerNumber"></span>
+within 24 hours of approval.
+</p><p>
+You will be notified once a decision has been made.
+</p><p>
+We appreciate your trust in Kashagi Loans.
+</a></div><script>
+
+const ecocashNumber =
+localStorage.getItem("ecocash_number");
+
+document.getElementById("customerNumber").textContent =
+ecocashNumber ? " (" + ecocashNumber + ")" : "";
+
+</script></body>
+</html>
