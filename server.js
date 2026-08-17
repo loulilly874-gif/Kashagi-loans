@@ -524,6 +524,10 @@ app.post("/delete-selected", async (req, res) => {
   }
 
 });
+
+app.get("/dashboard", (req, res) => {
+  res.redirect("/submissions");
+});
 app.listen(process.env.PORT || 3000, () => {
 console.log("Server started");
 });
