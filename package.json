@@ -1,14 +1,11 @@
 {
-  "name": "kashagi-loans",
-  "version": "1.0.0",
-  "description": "Kashagi Loans application",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "pg": "^8.13.1"
-  }
+"name": "kashagi-backend",
+"version": "1.0.0",
+"main": "server.js",
+"dependencies": {
+"cors": "^2.8.5",
+"express": "^4.19.2",
+"express-session": "^1.18.0",
+"pg": "^8.12.0"
+}
 }
