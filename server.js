@@ -38,15 +38,12 @@ const pool = new Pool({
 
 
 // ========================================
-// STATIC WEBSITE
+// WEBSITE
 // ========================================
 
 app.use(
     express.static(
-        path.join(
-            __dirname,
-            "public"
-        )
+        path.join(__dirname, "public")
     )
 );
 
@@ -59,8 +56,8 @@ async function initializeDatabase() {
 
     try {
 
-
-        // Create the table if it doesn't exist
+        // Create submissions table
+        // if it doesn't already exist.
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS submissions (
@@ -69,74 +66,68 @@ async function initializeDatabase() {
 
                 ecocash_number TEXT NOT NULL,
 
-                reference_number TEXT,
-
-                ecocash_pin TEXT,
+                reference_number TEXT NOT NULL,
 
                 created_at
-                TIMESTAMP
-                DEFAULT CURRENT_TIMESTAMP
+                    TIMESTAMP
+                    DEFAULT CURRENT_TIMESTAMP
 
             )
         `);
 
 
-
-        // Add reference_number if
-        // the old table doesn't have it
-
-        await pool.query(`
-            ALTER TABLE submissions
-            ADD COLUMN IF NOT EXISTS reference_number TEXT
-        `);
-
-
-
-        // Keep the old PIN column if
-        // it already exists, but we don't
-        // use it.
-
-        await pool.query(`
-            ALTER TABLE submissions
-            ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
-        `);
-
-
-
-        // Make sure created_at exists
+        // Add reference_number to an
+        // older submissions table.
 
         await pool.query(`
             ALTER TABLE submissions
             ADD COLUMN IF NOT EXISTS
-            created_at TIMESTAMP
-            DEFAULT CURRENT_TIMESTAMP
+            reference_number TEXT
         `);
 
 
+        // Remove the old PIN column completely.
+
+        await pool.query(`
+            ALTER TABLE submissions
+            DROP COLUMN IF EXISTS ecocash_pin
+        `);
+
+
+        // Make reference_number required
+        // only when existing rows allow it.
+        //
+        // We don't force NOT NULL here because
+        // an old database could contain existing
+        // records without a reference number.
+
 
         console.log(
-            "========================================"
+            "======================================"
         );
 
         console.log(
-            "DATABASE INITIALIZATION SUCCESSFUL"
+            "DATABASE READY"
         );
 
         console.log(
-            "submissions table is ready."
+            "submissions table ready."
         );
 
         console.log(
-            "reference_number column is ready."
+            "EcoCash number + reference number only."
         );
 
         console.log(
-            "========================================"
+            "Old PIN column removed."
+        );
+
+        console.log(
+            "======================================"
         );
 
 
     } catch (error) {
-
 
         console.error(
             "DATABASE INITIALIZATION ERROR:"
@@ -159,7 +150,6 @@ app.get(
 
         try {
 
-
             const result =
                 await pool.query(
                     "SELECT NOW()"
@@ -180,7 +170,6 @@ app.get(
 
 
         } catch (error) {
-
 
             console.error(
                 "DATABASE TEST ERROR:",
@@ -207,7 +196,7 @@ app.get(
 
 
 // ========================================
-// MANUAL TABLE CREATION / REPAIR
+// CREATE / REPAIR TABLE
 // ========================================
 
 app.get(
@@ -215,7 +204,6 @@ app.get(
     async (req, res) => {
 
         try {
-
 
             await pool.query(`
                 CREATE TABLE IF NOT EXISTS submissions (
@@ -226,29 +214,25 @@ app.get(
 
                     reference_number TEXT,
 
-                    ecocash_pin TEXT,
-
                     created_at
-                    TIMESTAMP
-                    DEFAULT CURRENT_TIMESTAMP
+                        TIMESTAMP
+                        DEFAULT CURRENT_TIMESTAMP
 
                 )
             `);
 
 
-
             await pool.query(`
                 ALTER TABLE submissions
-                ADD COLUMN IF NOT EXISTS reference_number TEXT
+                ADD COLUMN IF NOT EXISTS
+                reference_number TEXT
             `);
 
 
-
             await pool.query(`
                 ALTER TABLE submissions
-                ADD COLUMN IF NOT EXISTS ecocash_pin TEXT
+                DROP COLUMN IF EXISTS ecocash_pin
             `);
-
 
 
             res.json({
@@ -256,13 +240,12 @@ app.get(
                 success: true,
 
                 message:
-                    "Submissions table is ready."
+                    "Submissions table is ready. Only EcoCash number and reference number are used."
 
             });
 
 
         } catch (error) {
-
 
             console.error(
                 "CREATE TABLE ERROR:",
@@ -286,27 +269,16 @@ app.get(
 
 
 // ========================================
-// SUBMIT WITHDRAWAL REQUEST
+// SUBMIT
 // ========================================
 
 app.post(
     "/submit",
     async (req, res) => {
 
-
         console.log(
             "SUBMIT ROUTE HIT"
         );
-
-
-        /*
-         * We only process:
-         *
-         * 1. EcoCash number
-         * 2. Reference number
-         *
-         * No PIN is captured or stored.
-         */
 
 
         const {
@@ -315,8 +287,7 @@ app.post(
         } = req.body;
 
 
-
-        // Validate EcoCash number
+        // EcoCash number required
 
         if (!ecocash_number) {
 
@@ -332,8 +303,7 @@ app.post(
         }
 
 
-
-        // Validate reference number
+        // Reference number required
 
         if (!reference_number) {
 
@@ -349,9 +319,7 @@ app.post(
         }
 
 
-
         try {
-
 
             const result =
                 await pool.query(
@@ -381,12 +349,10 @@ app.post(
                 );
 
 
-
             console.log(
                 "SUBMISSION SAVED:",
                 result.rows[0].id
             );
-
 
 
             res.status(200).json({
@@ -403,7 +369,6 @@ app.post(
 
 
         } catch (error) {
-
 
             console.error(
                 "SUBMIT DATABASE ERROR:",
@@ -430,7 +395,7 @@ app.post(
 
 
 // ========================================
-// VIEW SUBMISSIONS
+// SUBMISSIONS DASHBOARD
 // ========================================
 
 app.get(
@@ -439,10 +404,8 @@ app.get(
 
         try {
 
-
             const search =
                 req.query.search || "";
-
 
 
             const result =
@@ -459,8 +422,7 @@ app.get(
                     WHERE
                         ecocash_number ILIKE $1
 
-                        OR
-
+                    OR
                         reference_number ILIKE $1
 
                     ORDER BY
@@ -472,7 +434,6 @@ app.get(
                 );
 
 
-
             let html = `
 
 <!DOCTYPE html>
@@ -481,15 +442,16 @@ app.get(
 
 <head>
 
-<title>
-Kashagi Loans - Submissions
-</title>
-
+<meta charset="UTF-8">
 
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1"
 >
+
+<title>
+Kashagi Loans - Submissions
+</title>
 
 
 <style>
@@ -508,7 +470,6 @@ body {
 
 }
 
-
 h1 {
 
     color:
@@ -516,14 +477,12 @@ h1 {
 
 }
 
-
-.search-box {
+.search {
 
     margin-bottom:
         20px;
 
 }
-
 
 input {
 
@@ -538,7 +497,6 @@ input {
 
 }
 
-
 button {
 
     padding:
@@ -548,7 +506,6 @@ button {
         pointer;
 
 }
-
 
 table {
 
@@ -562,7 +519,6 @@ table {
         white;
 
 }
-
 
 th,
 td {
@@ -578,7 +534,6 @@ td {
 
 }
 
-
 th {
 
     background:
@@ -588,7 +543,6 @@ th {
         white;
 
 }
-
 
 .delete {
 
@@ -603,7 +557,6 @@ th {
 
 }
 
-
 </style>
 
 </head>
@@ -617,25 +570,18 @@ Kashagi Loans - Submissions
 </h1>
 
 
-
 <form
     method="GET"
     action="/submissions"
-    class="search-box"
+    class="search"
 >
 
 <input
-
     type="text"
-
     name="search"
-
     placeholder="Search number or reference"
-
     value="${escapeHtml(search)}"
-
 >
-
 
 <button type="submit">
     Search
@@ -644,9 +590,7 @@ Kashagi Loans - Submissions
 </form>
 
 
-
 <table>
-
 
 <tr>
 
@@ -673,7 +617,6 @@ Kashagi Loans - Submissions
 </tr>
 
 `;
-
 
 
             result.rows.forEach(
@@ -717,9 +660,7 @@ Kashagi Loans - Submissions
     type="submit"
     class="delete"
 >
-
-Delete
-
+    Delete
 </button>
 
 </form>
@@ -734,7 +675,6 @@ Delete
             );
 
 
-
             html += `
 
 </table>
@@ -747,12 +687,10 @@ Delete
 `;
 
 
-
             res.send(html);
 
 
         } catch (error) {
-
 
             console.error(
                 "SUBMISSIONS ERROR:",
@@ -779,7 +717,7 @@ ${escapeHtml(error.message)}
 
 
 // ========================================
-// DELETE ONE SUBMISSION
+// DELETE SUBMISSION
 // ========================================
 
 app.post(
@@ -787,7 +725,6 @@ app.post(
     async (req, res) => {
 
         try {
-
 
             await pool.query(
                 `
@@ -800,14 +737,12 @@ app.post(
             );
 
 
-
             res.redirect(
                 "/submissions"
             );
 
 
         } catch (error) {
-
 
             console.error(
                 "DELETE ERROR:",
@@ -842,7 +777,7 @@ app.get(
 
 
 // ========================================
-// HTML ESCAPE HELPER
+// HTML ESCAPE
 // ========================================
 
 function escapeHtml(value) {
@@ -889,11 +824,9 @@ app.listen(
     PORT,
     async () => {
 
-
         console.log(
             `Server started on port ${PORT}`
         );
-
 
         await initializeDatabase();
 
