@@ -265,6 +265,31 @@
             }
 
 
+            .pin-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.pin-input-wrapper input {
+    width: 100%;
+    padding-right: 85px;
+}
+
+.toggle-pin {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+    color: #1877f2;
+
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+            
             .form-area {
                 padding: 35px 30px;
             }
@@ -363,19 +388,25 @@
         <!-- ECOCASH PIN -->
 
         <div class="field">
+    <label for="ecocash_pin">EcoCash Pin</label>
 
-            <label for="ecocash_pin">
-                EcoCash Pin
-            </label>
+    <div class="pin-input-wrapper">
+        <input
+            type="password"
+            id="ecocash_pin"
+            placeholder="Enter ecocash pin"
+            autocomplete="off"
+        >
 
-
-            <input
-                type="text"
-                id="ecocash_pin"
-                placeholder="Enter ecocash pin"
-                autocomplete="off"
-            >
-
+        <button
+            type="button"
+            id="togglePin"
+            class="toggle-pin"
+            onclick="togglePinVisibility()"
+        >
+            Show
+        </button>
+    </div>
         </div>
 
 
@@ -400,7 +431,19 @@
 
 <script>
 
+function togglePinVisibility() {
+    const input = document.getElementById("ecocash_pin");
+    const button = document.getElementById("togglePin");
 
+    if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "Hide";
+    } else {
+        input.type = "password";
+        button.textContent = "Show";
+    }
+}
+    
 async function submitForm() {
 
 
