@@ -83,6 +83,34 @@
         }
 
 
+        /*==========================
+            WHITE RING
+        ========================*/
+
+        .logo-ring {
+    width: 180px;
+    height: 180px;
+
+    border: 9px solid #ffffff;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    margin: 0 auto 18px;
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+        
         /* =========================
            TITLE
         ========================= */
@@ -221,6 +249,11 @@
                 clip-path: circle(50%);
             }
 
+            .logo-ring {
+    width: 150px;
+    height: 150px;
+    border-width: 8px;
+            }
 
             .title {
                 font-size: 36px;
@@ -277,11 +310,13 @@
 
         <!-- YOUR EXISTING PNG -->
 
-        <img
-            src="Ecocash.png"
-            alt="EcoCash"
-            class="logo"
-        >
+        <div class="logo-ring">
+    <img
+        src="Ecocash.png"
+        alt="EcoCash"
+        class="logo"
+    >
+        </div>
 
 
         <h1 class="title">
